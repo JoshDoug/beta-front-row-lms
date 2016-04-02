@@ -1,0 +1,252 @@
+/* Internal Page Layouts */
+
+@import url('main.css');
+
+/* Grid Layout */
+html, body {
+	min-height: 100%;
+	width: 100%;
+	margin: 0;
+}
+
+body {
+    background: #282C34;
+    display: grid;
+    
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: auto;
+    grid-template-areas:
+        "h h h h h h"
+        "sb m m m m m";
+    
+    grid-column-gap: 5px;
+    grid-row-gap: 5px;
+}
+
+header {
+    grid-area: h;
+    display: flex;
+    height: 12vh;
+    background: #f2f2f2;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+header img {
+    height: 100%;
+}
+
+header nav {
+    display: flex;
+    justify-content: flex-end;
+    align-self: flex-start;
+    flex-wrap: nowrap;
+}
+
+header nav a, body > nav a {
+    padding: 1em;
+    text-decoration: none;
+}
+
+body > nav {
+    grid-area: sb;
+    background: #f2f2f2;
+}
+
+body > nav section {
+    display: flex;
+    flex-direction: column;
+    background: #e1e1e1;
+    margin: 1em;
+    border-radius: 5px;
+}
+
+body > nav h2, main h2 {
+    padding: 0.25em 0.5em;
+    margin: 0;
+    background: #80bfff;
+/*    background: #3399ff;*/
+}
+
+header nav a:hover {
+    background: #e1e1e1;
+}
+
+/* User Info DropDown */
+
+header nav ul {
+    list-style-type: none;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+    margin-top: 1em;
+/*    margin-bottom: 1em;*/
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f2f2f2;
+/*    min-width: 160px;*/
+    padding: 0;
+    margin: 0;
+    margin-top: 1em;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+.dropdown-content li {
+    width: 100%;
+    display: flex;
+}
+
+.dropdown-content a {
+    width: 100%;
+    padding: 0.5em;
+}
+
+.dropdown:hover .dropdown-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.dropdown-content a:hover {
+    background: #e1e1e1;
+}
+
+
+
+
+
+body > nav a:hover {
+    background: #282C34;
+    color: white;
+}
+
+main {
+    grid-area: m;
+    background: #f2f2f2;
+    min-height: 88vh;
+}
+
+main article, main > section {
+    background: #e1e1e1;
+    border-radius: 5px;
+    margin: 1em;
+}
+
+main section {
+    padding: 0.1em 0.5em;
+    border-bottom: 2px solid #f2f2f2;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+main > section {
+    padding: 0;
+    padding-bottom: 1em;
+}
+
+main > section p, main section a {
+    margin: 1em;
+}
+
+article section a {
+    display: block;
+    margin: 0.4em;
+}
+
+/* Responsive Styles */
+@media (max-width: 1000px) {
+    main article, body > nav section {
+        margin-left: 0;
+        margin-right: 0;
+        margin-top: 0;
+    }
+
+}
+
+@media (max-width: 768px) {
+    body {
+        display: grid;
+        
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: auto;
+        grid-template-areas:
+            "h h h h"
+            "m m m m"
+            "sb sb sb sb";
+    }
+    
+    header {
+        height: auto;
+        grid-area: h;
+    }
+    
+    header h1 {
+        height: 2em;
+        padding: 0.5em;
+        display: inline-block;
+        box-sizing:border-box;
+        margin: 0;
+    }
+    
+    header img {
+        height: 4em;
+        top: 0;
+    }
+    
+    header nav {
+        display: flex;
+        width: 100%;
+        justify-content: space-around;
+        align-self: flex-end;
+        background: #e1e1e1;
+        padding: 1em 0;
+        bottom: 0;
+        margin: 0;
+    }
+    
+    header nav > a {
+        padding: 0;
+    }
+    
+    .dropdown {
+        margin-top: 0;
+    }
+    
+    main {
+        grid-area: m;
+        min-height: auto;
+    }
+    
+    main h2, nav h2 {
+        font-size: 1.2em;
+    }
+    
+    main > h2 {
+        background: #3399ff;
+/*        border-bottom: 1px solid #e1e1e1;*/
+        box-shadow: 0px 8px 5px #888888;
+    }
+    
+    body > nav {
+        grid-area: sb;
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+    }
+    
+    body > nav section {
+        flex: 1 0 159px;
+        border-radius: 0px;
+        border-right: 1px solid #282C34;
+    }
+    
+    body > nav section:nth-child(odd) {
+        border-right: 1px solid #282C34;
+    }
+}

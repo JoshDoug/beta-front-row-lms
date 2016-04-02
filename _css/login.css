@@ -1,0 +1,125 @@
+/*Login Page Specific Styles*/
+
+/* Import other CSS Modules */
+@import url('main.css');
+
+html {
+    height: 100vh;
+}
+
+body {
+    background: url("../_img/background-login.png") no-repeat center;
+    min-height: 100%;
+    box-sizing: border-box;
+}
+
+header {
+    background: rgba(255,255,255,0.7);
+    min-height: 12vh;
+}
+
+h1 {
+    display: inline-block;
+    margin: 1.2em;
+}
+
+main {
+	height: 88vh;
+    display: flex;
+    justify-content: space-around;
+	align-items: center;
+}
+
+input {
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    background: #f2f2f2;
+    padding: 0.35em 0.75em;
+    font-size: 1.1em;
+    text-decoration: none;
+    border: none;
+    border-radius: 2px;
+}
+
+input[type="submit"] {
+    background: #3399ff;
+    text-transform: uppercase;
+    font-weight:bold;
+    color: white;
+}
+
+input[type="submit"]:hover {
+    background: #80bfff;
+}
+
+form {
+    background: rgba(100,100,100,0.5);
+    padding: 0.5%;
+    border-radius: 3px;
+}
+
+@media (max-width: 768px) {
+    main {
+        display: block;
+        margin-top: 40%;
+    }
+    
+    header::before {
+        position: fixed;
+        top: 0;
+        left: 0;
+        background: url('../_img/kulogo.png') no-repeat;
+        background-size: 100%;
+        height: 12vh;
+        width: 12vh;
+        content: "";
+        float: left;
+    }
+    
+    h1 {
+        float: right;
+        margin: 5%;
+    }
+    
+    header::after {
+        clear: both;
+    }
+    
+    main img {
+        display: none;
+    }
+
+    form {
+        width: 80%;
+        padding: 1%;
+        margin: auto;
+    }
+}
+
+@media (max-width: 870px) {
+    input {
+        display: block;
+        width: 95%;
+/*        margin: auto;*/
+        margin: 2% auto;
+    }
+    
+    form {
+        padding: 1%;
+        margin: auto;
+    }
+}
+
+@media (max-height: 414px) {
+    main {
+        display: block;
+        margin-top: 10%;
+    }
+    
+    h1 {
+        margin: 0.5%;
+        margin-right: 2%;
+    }
+}
