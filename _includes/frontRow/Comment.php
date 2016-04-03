@@ -3,6 +3,7 @@
 class Comment {
     private $commentID;
     private $postID;
+    private $kNumber;
     private $commentText;
     private $dateTimeCommented;
     

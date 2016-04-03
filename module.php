@@ -62,8 +62,8 @@ if(isset($_GET['moduleID'])) {
         }
         
         $currentPage = $currentModule->currentPage;
-        
-        $currentPage->getPosts($db);    
+        $currentPage->getPosts($db);
+        $currentPageID = $currentPage->pageID;
             
         //Get user privs for current module
         $sql = 'SELECT permission FROM userModule WHERE kNumber = :kNumber AND moduleID = :moduleID';
@@ -77,6 +77,93 @@ if(isset($_GET['moduleID'])) {
         } else {
             $priv = false;
         }
+        
+        
+        //Handle Posts - potentially shift into a require/include
+        $moduleID = $_GET['moduleID'] . '/';
+        $destination = __DIR__ . '/_uploads/' . $moduleID;
+
+        if(!is_dir($destination)) {
+            mkdir($destination, 0755);
+        }
+        
+        if(isset($_POST['makePost']) && isset($_POST['postTitle'])) {
+            $sql = 'INSERT INTO post (title, pageID, content, commentsAllowed, dateTimePosted)
+                    VALUES (:title, :pageID, :content, :commentsAllowed, now())';
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam(':pageID', $currentPageID);
+            $stmt->bindParam(':title', $_POST['postTitle']);
+            $stmt->bindParam(':content', $_POST['postContent']);
+            if(isset($_POST['commentsAllowed'])) {
+                $commentsAllowed = 1;
+                $stmt->bindParam(':commentsAllowed', $commentsAllowed);
+            } else {
+                $commentsAllowed = 0;
+                $stmt->bindParam(':commentsAllowed', $commentsAllowed);
+            }
+            $stmt->execute();
+
+            //Can probably remove this var
+            $lastID;
+
+            if(isset($_POST['fileChoice'])) {
+                $sql = 'SELECT LAST_INSERT_ID();';
+                $stmt = $db->prepare($sql);
+                $stmt->execute();
+                $lastID = $stmt->fetchColumn();
+
+                print_r($lastID);
+
+                $postFiles = $_POST['fileChoice'];
+
+                foreach($postFiles as $file) {
+                $sql = 'INSERT INTO postFile (postID, fileName)
+                        VALUES (:postID, :fileName)';
+                $stmt = $db->prepare($sql);
+                $stmt->bindParam(':postID', $lastID);
+                $stmt->bindParam(':fileName', $file);
+                $stmt->execute();
+                }
+                print_r($_POST['fileChoice']);
+            }
+
+            if(isset($_POST['linkName']) && isset($_POST['linkHref'])){
+                $linkNames = $_POST['linkName'];
+                $linkHrefs = $_POST['linkHref'];
+
+                $linkNumber = count($linkNames);
+
+                for($i = 0; $i < $linkNumber; $i++) {
+                    $sql = 'INSERT INTO postLink (postID, linkName, linkHref)
+                            VALUES (:postID, :linkName, :linkHref)';
+                    $stmt = $db->prepare($sql);
+                    $stmt->bindParam(':postID', $lastID);
+                    $stmt->bindParam(':linkName', $linkNames[$i]);
+                    $stmt->bindParam(':linkHref', $linkHrefs[$i]);
+                    $stmt->execute();
+                }
+            }
+        }
+        
+        if(isset($_POST['postComment'])) {
+            $sql = 'INSERT INTO postComment (postID, kNumber, commentText, dateTimeCommented)
+                    VALUES (:postID, :kNumber, :commentText, now())';
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam(':postID', $_POST['postID']);
+            $stmt->bindParam(':kNumber', $_SESSION['username']);
+            $stmt->bindParam(':commentText', $_POST['commentText']);
+            $stmt->execute();
+        }
+        
+        //Select posts
+        $sql = 'SELECT * FROM Post WHERE pageID = :pageID';
+        $stmt = $db->prepare($sql);
+//        $currentPageID = $currentPage->pageID;
+        $stmt->bindParam(':pageID', $currentPageID);
+        $stmt->execute();
+        $posts = $stmt->fetchAll(PDO::FETCH_CLASS, 'Post');
+        
+        
     }
 } else {
     header('Location: home.php');
@@ -122,9 +209,112 @@ if(isset($_GET['moduleID'])) {
         </nav>
         <main>
             <h2>Module: <?= $currentModule->moduleID ?> - <?= $currentModule->moduleName ?></h2>
+            
+            <?php if($priv) : ?>
             <article>
-                <p>Gon put some forms here</p>
+                <h2>Test Multiple Insert referencing initial insert ID.</h2>
+                <section>
+                    <!--     POST CREATION FORM               -->
+                    <form method="post" action="">
+                        <p>Enter Post Title:</p>
+                        <input type="text" name="postTitle">
+                        <p>Enter Post Content:</p>
+                        <input type="text" name="postContent">
+                        <p>Comments allowed:</p>
+                        <input type="checkbox" name="commentsAllowed">
+                        <?php $directoryContents = scandir($destination);
+                        $files = array_diff($directoryContents, array('.', '..')); ?>
+                        <p>Add files to post or remove files:</p>
+                        <button id="addFileChoice">Add File</button>
+                        <button id="removeFileChoice">Remove File</button>
+                        <div id="file-choice-section">
+                            <select class="fileChoice" name="fileChoice[]">
+                                <?php foreach($files as $file) : ?>
+                                <?php if($file != "." || $file != "..") : ?>
+                                    <option value="<?= $file ?>"><?= $file ?></option>
+                                <?php endif ?>
+
+                                <?php if($file == "."){
+                                        echo 'It equals .';
+                                    }
+                                ?>
+                                <?php endforeach ?>
+                            </select>
+                        </div>
+                        <p>Add links to post or remove links:</p>
+                        <button id="addLinkChoice">Add Link</button>
+                        <button id="removeLinkChoice">Remove Link</button>
+                        <div id="link-choice"></div>
+
+                        <input type="submit" name="makePost">
+                    </form>
+                </section>
             </article>
+            <?php endif ?>
+            
+            <?php foreach($posts as $post) : ?>
+            <article>
+                <h2><?= $post->title ?></h2>
+                <section>
+                <p><?= $post->content ?></p>
+                <?php
+                    $postID = $post->postID;
+                    $sql = 'SELECT fileName FROM postFile WHERE postID = :postID';
+                    $stmt = $db->prepare($sql);
+                    $stmt->bindParam(':postID', $postID);
+                    $stmt->execute();
+                    $postFileArr = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+
+                ?>
+                <p>Files:</p>
+                <?php
+                    foreach($postFileArr as $linkedFile){
+                        echo '<p><a target="_blank" href="/_uploads/' . $moduleID . $linkedFile . '">' . $linkedFile . '</a></p>';
+                    }
+
+                ?>
+                <p>Links:</p>
+                <?php
+                    $sql = 'SELECT * FROM postLink WHERE postID = :postID';
+                    $stmt = $db->prepare($sql);
+                    $stmt->bindParam(':postID', $postID);
+                    $stmt->execute();
+                    $links = $stmt->fetchAll(PDO::FETCH_CLASS, 'Link');
+
+                    foreach($links as $link){
+                        echo '<p><a target="_blank" href="' . $link->linkHref . '">' . $link->linkName . '</a></p>';
+                    }
+                ?>
+                <?php
+                    if($post->commentsAllowed){
+                        echo '<p>Comments allowed!</p>';
+                        $sql = 'SELECT * FROM postComment WHERE postID = :postID';
+                        $stmt = $db->prepare($sql);
+                        $stmt->bindParam(':postID', $postID);
+                        $stmt->execute();
+                        $comments = $stmt->fetchAll(PDO::FETCH_CLASS, 'Comment');
+                        foreach($comments as $comment) {
+                            echo '<h3>' . $comment->kNumber . '</h3>';
+                            echo '<p>' . $comment->commentText . '</p>';
+                        }
+                ?>
+                <form method="post" action="">
+                    <input type="hidden" name="postID" value="<?= $post->postID ?>">
+                    <input type="text" name="commentText">
+                    <input type="submit" name="postComment">
+                </form>
+                <?php
+                    } elseif(!$post->commentsAllowed) {
+                        echo '<p>No comments allowed!</p>';
+                    } else {
+                        echo '<p>Something went wrong.</p>';
+                    }
+                ?>
+                </section>
+            </article>
+            <?php endforeach ?>
+            
+<!--
             <article class="module-post">
                 <h2>Lecture 3 Slides</h2>
                 <section>
@@ -149,6 +339,8 @@ if(isset($_GET['moduleID'])) {
                     <a href="#">OraclesJavaSE9Plans</a>
                 </section>
             </article>
+-->
         </main>
+    <script src="_js/postOptions.js"></script>
     </body>
 </html>
