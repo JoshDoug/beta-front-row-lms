@@ -104,15 +104,14 @@ if(isset($_GET['moduleID'])) {
             $stmt->execute();
 
             //Can probably remove this var
-            $lastID;
+            $sql = 'SELECT LAST_INSERT_ID();';
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+            $lastID = $stmt->fetchColumn();
 
+            print_r($lastID);
+            
             if(isset($_POST['fileChoice'])) {
-                $sql = 'SELECT LAST_INSERT_ID();';
-                $stmt = $db->prepare($sql);
-                $stmt->execute();
-                $lastID = $stmt->fetchColumn();
-
-                print_r($lastID);
 
                 $postFiles = $_POST['fileChoice'];
 
@@ -158,7 +157,6 @@ if(isset($_GET['moduleID'])) {
         //Select posts
         $sql = 'SELECT * FROM Post WHERE pageID = :pageID';
         $stmt = $db->prepare($sql);
-//        $currentPageID = $currentPage->pageID;
         $stmt->bindParam(':pageID', $currentPageID);
         $stmt->execute();
         $posts = $stmt->fetchAll(PDO::FETCH_CLASS, 'Post');
@@ -196,9 +194,9 @@ if(isset($_GET['moduleID'])) {
                 <div class="dropdown">
                     <a href="#" class="dropdown-toggle">User Information</a>
                     <ul class="dropdown-content">
-                        <li><a href="#">KNumber</a></li>
-                        <li><a href="#">Email</a></li>
-                        <li><a href="#">Name</a></li>
+                        <li><a href="#"><?= $user->kNumber ?></a></li>
+                        <li><a href="#"><?= $user->fName ?></a></li>
+                        <li><a href="#"><?= $user->lName ?></a></li>
                     </ul>
                 </div>
                 <a id="logout" href="logout.php">Logout</a>
@@ -313,33 +311,6 @@ if(isset($_GET['moduleID'])) {
                 </section>
             </article>
             <?php endforeach ?>
-            
-<!--
-            <article class="module-post">
-                <h2>Lecture 3 Slides</h2>
-                <section>
-                    <p>Here are the slides from the lecture, as well as some useful resources to help with the coursework.</p>
-                    <h3>Documents &amp; Resources:</h3>
-                    <a href="#">SomeSlides.jpg</a>
-                    <a href="#">SomeCode.zip</a>
-                    <h3>Other Resources:</h3>
-                    <a href="#">CodeCademy</a>
-                    <a href="#">OraclesJavaSE9Plans</a>
-                </section>
-            </article>
-            <article class="module-post">
-                <h2>Coursework Info</h2>
-                <section>
-                    <p>Here are the slides from the lecture, as well as some useful resources to help with the coursework.</p>
-                    <h3>Documents &amp; Resources:</h3>
-                    <a href="#">SomeSlides.jpg</a>
-                    <a href="#">SomeCode.zip</a>
-                    <h3>Other Resources:</h3>
-                    <a href="#">CodeCademy</a>
-                    <a href="#">OraclesJavaSE9Plans</a>
-                </section>
-            </article>
--->
         </main>
     <script src="_js/postOptions.js"></script>
     </body>
