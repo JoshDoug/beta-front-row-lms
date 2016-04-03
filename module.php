@@ -10,7 +10,13 @@ use frontRow\User;
 
 require_once '_includes/pdoConnect.php';
 require_once '_includes/authenticate.php';
+require_once '_includes/frontRow/Comment.php';
+require_once '_includes/frontRow/Link.php';
 require_once '_includes/frontRow/Module.php';
+require_once '_includes/frontRow/ModulePage.php';
+require_once '_includes/frontRow/Post.php';
+require_once '_includes/frontRow/UploadFile.php';
+require_once '_includes/frontRow/User.php';
 
 if(isset($_GET['moduleID'])) {
     //Check that the module exists, avoids any randoom user additions to the _GET
@@ -22,15 +28,21 @@ if(isset($_GET['moduleID'])) {
         header('Location: home.php');
     } else {
         
-        $currentModule;
-        
-        $stmt = $db->prepare('SELECT module.moduleID, module.moduleName
-        FROM module, userModule
-        WHERE module.moduleID=userModule.moduleID AND userModule.kNumber=:kNumber');
+        //Set up user
+        $stmt = $db->prepare('SELECT *
+        FROM user
+        WHERE user.kNumber=:kNumber');
         $stmt->bindParam(':kNumber', $_SESSION['username']);
         $stmt->execute();
+
+        $user = $stmt->fetchObject('User');
         
-        $modules = $stmt->fetchAll(PDO::FETCH_CLASS, 'module');
+        //Get Modules
+        $user->setModules($db);
+        $modules = $user->modules;
+        
+        //Create var for current module
+        $currentModule;
         
         foreach($modules as $module) {
             $module->setModulePage($db);
@@ -39,25 +51,21 @@ if(isset($_GET['moduleID'])) {
             }
         }
         
-        $currentPage;
-        
-        //USE CURRENT MODULE - DUH
-        if (isset($_GET['modulePage'])) {
-            $numberOfPages = count($currentModule->modulePage);
-            for ($i = 0; $i < $numberOfPages; $i++) {
-                if ($_GET['modulePage'] == $currentModule->modulePage[$i]) {
-                    $currentPage = $currentModule->modulePage[$i];
-                }
-            }
-            if (!isset($currentPage)) {
-                $currentPage = $currentModule->modulePage[0];
+        if(isset($_GET['modulePage'])) {
+            if(in_array($_GET['modulePage'], $currentModule->modulePage)) {
+                $currentModule->setCurrentPage($db, $_GET['modulePage']);
+            } else {
+                $currentModule->setCurrentPage($db, $currentModule->modulePage[0]);
             }
         } else {
-            echo 'It ain\'t set!';
-            $currentPage = $currentModule->modulePage[0];
+            $currentModule->setCurrentPage($db, $currentModule->modulePage[0]);
         }
         
-        //Get user privs
+        $currentPage = $currentModule->currentPage;
+        
+        $currentPage->getPosts($db);    
+            
+        //Get user privs for current module
         $sql = 'SELECT permission FROM userModule WHERE kNumber = :kNumber AND moduleID = :moduleID';
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':moduleID', $_GET['moduleID']);
@@ -69,8 +77,6 @@ if(isset($_GET['moduleID'])) {
         } else {
             $priv = false;
         }
-        //echo $stmt->fetchColumn();
-
     }
 } else {
     header('Location: home.php');
@@ -96,7 +102,7 @@ if(isset($_GET['moduleID'])) {
     <body>
         <header>
             <img src="_img/kulogo.png" alt="Kingston University">
-            <h1><?= $currentPage ?></h1>
+            <h1><?= $currentPage->pageName ?></h1>
             <nav>
                 <a href="home.php">Home</a>
                 <a href="moduleCatalogue.php">Module Catalogue</a>
@@ -116,6 +122,9 @@ if(isset($_GET['moduleID'])) {
         </nav>
         <main>
             <h2>Module: <?= $currentModule->moduleID ?> - <?= $currentModule->moduleName ?></h2>
+            <article>
+                <p>Gon put some forms here</p>
+            </article>
             <article class="module-post">
                 <h2>Lecture 3 Slides</h2>
                 <section>

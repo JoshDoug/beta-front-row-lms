@@ -5,23 +5,28 @@ class Module {
     private $moduleName;
     private $moduleDescription;
     private $modulePage;
+    private $currentPage;
     
     public function __get($name) {
         return $this->$name;
     }
     
-//    public function setModulePage(&$modulePageArray) {
-//        $modulePage = $modulePageArray;
-//    }
-    
     public function setModulePage($db){
-            $stmt = $db->prepare('SELECT modulePage.pageName
-            FROM modulePage
-            WHERE modulePage.moduleID=:moduleID');
-//            $modID = $module->moduleID;
-            $stmt->bindParam(':moduleID', $this->moduleID);
-            $stmt->execute();
-            $this->modulePage = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
-//            $this->modulePage = $stmt->fetch(PDO::FETCH_NUM);
+        $stmt = $db->prepare('SELECT modulePage.pageName
+                            FROM modulePage
+                            WHERE moduleID=:moduleID');
+        $stmt->bindParam(':moduleID', $this->moduleID);
+        $stmt->execute();
+        $this->modulePage = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+    }
+    
+    public function setCurrentPage($db, $pageName){
+        $stmt = $db->prepare('SELECT pageID, moduleID, pageName
+                            FROM modulePage
+                            WHERE moduleID=:moduleID AND pageName=:pageName');
+        $stmt->bindParam(':moduleID', $this->moduleID);
+        $stmt->bindParam(':pageName', $pageName);
+        $stmt->execute();
+        $this->currentPage = $stmt->fetchObject('ModulePage');
     }
 }

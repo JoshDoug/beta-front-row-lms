@@ -1,3 +1,81 @@
+<?php
+
+use frontRow\Module;
+use frontRow\ModulePage;
+use frontRow\UploadFile;
+use frontRow\User;
+
+require_once '_includes/pdoConnect.php';
+require_once '_includes/authenticate.php';
+require_once '_includes/frontRow/Module.php';
+require_once '_includes/frontRow/ModulePage.php';
+require_once '_includes/frontRow/UploadFile.php';
+require_once '_includes/frontRow/User.php';
+
+$sql = 'SELECT permission FROM userModule WHERE kNumber = :kNumber AND moduleID = :moduleID';
+$stmt = $db->prepare($sql);
+$stmt->bindParam(':moduleID', $_GET['moduleID']);
+$stmt->bindParam(':kNumber', $_SESSION['username']);
+$stmt->execute();
+
+if($stmt->fetchColumn() == 1){
+    $priv = true;
+} else {
+    $priv = false;
+    header('Location: home.php');
+}
+
+//Set up user
+$stmt = $db->prepare('SELECT *
+FROM user
+WHERE user.kNumber=:kNumber');
+$stmt->bindParam(':kNumber', $_SESSION['username']);
+$stmt->execute();
+
+$user = $stmt->fetchObject('User');
+
+//Get Modules
+$user->setModules($db);
+$modules = $user->modules;
+
+foreach($modules as $module) {
+    
+    $module->setModulePage($db);    
+}
+
+if(!isset($_SESSION['maxfiles'])){
+    $_SESSION['maxfiles'] = ini_get('max_file_uploads');
+    $_SESSION['postmax'] = UploadFile::convertToBytes(ini_get('post_max_size'));
+    $_SESSION['displaymax'] = UploadFile::convertFromBytes($_SESSION['postmax']);
+}
+
+$max = 32000000;
+$result = [];
+
+$moduleID = $_GET['moduleID'];
+$destination = __DIR__ . '/_uploads/' . $moduleID;
+
+if(!is_dir($destination)) {
+    mkdir($destination, 0755);
+}
+
+if(isset($_POST['upload'])) {
+    
+    try {
+        $upload = new UploadFile($destination);
+//        $upload->setMaxSize($max);
+        $upload->allowAllTypes();
+        $upload->upload();
+        $result = $upload->getMessages();
+    } catch (Exception $e) {
+        $result[] = $e->getMessage();
+    }
+}
+
+$error = error_get_last();
+
+
+?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -32,31 +110,64 @@
         </nav>
         </header>
         <nav>
-            <section>
-                <h2>Module 1</h2>
-                <a href="#">Example Page</a>
-                <a href="#">Example Page</a>
-                <a href="#">Example Page</a>
-                <a href="#">Example Page</a>
-            </section>
-            <section>
-                <h2>Module 2</h2>
-                <a href="#">Example Page</a>
-                <a href="#">Example Page</a>
-            </section>
-            <section>
-                <h2>Module 3</h2>
-            </section>
-            <section>
-                <h2>Module 4</h2>
-            </section>
+            <?php include_once '_includes/moduleNav.php'; ?>
         </nav>
         <main>
+            <?php if($result || $error) : ?>
             <section>
-                <h2>Lecture 3 Slides</h2>
-                <p>Some Description.</p>
-                <a href="#">Link to module</a>
+                <h2>File Upload Info:</h2>
+                <ul class="result">
+                    <?php 
+
+                        if($error) {
+                            echo "<li>{error['message']}</li>";
+                        }
+
+                    if($result) {
+                    foreach($result as $message) : ?>
+                        <li><?= $message ?></li>
+                    <?php endforeach ?>
+                    <?php } ?>
+                </ul>
             </section>
+            <?php endif ?>
+            
+            <section>
+                <h2>Upload Files:</h2>
+                <form action="moduleFile.php?moduleID=<?= $_GET['moduleID'] ?>" method="post" enctype="multipart/form-data">
+                    <p>
+                        <input type="hidden" name="MAX_FILE_SIZE" value="<?= $max ?>">
+                        <label for="filename">Select File</label>
+                        <input type="file" name="filename[]" id="filename" multiple
+                               data-maxfiles="<?= $_SESSION['maxfiles'] ?>"
+                               data-postmax="<?= $_SESSION['postmax'] ?>"
+                               data-displaymax="<?= $_SESSION['displaxmax'] ?>">
+                    </p>
+                    <p>
+                        <input type="submit" name="upload" value="Upload File">
+                    </p>
+                    <ul>
+                        <li>Up to <?php echo $_SESSION['maxfiles'];?> files can be uploaded simultaneously.</li>
+                        <li>Each file should be no more than <?php echo UploadFile::convertFromBytes($max);?>.</li>
+                        <li>Combined total should not exceed <?php echo $_SESSION ['displaymax'];?>.</li>
+                    </ul>
+                </form>
+            </section>
+        
+        <?php 
+            $directoryContents = scandir($destination);
+            $files = array_diff($directoryContents, array('.', '..'));    
+        ?>
+        <section>
+            <h2>Files</h2>
+            <ul>
+            <?php foreach($files as $file) : ?>
+                <li><a href="<?php echo '/_uploads/' . $file ?>" target="_blank"><?= $file ?></a></li>
+            <?php endforeach ?>
+            </ul>
+        </section>
+        
+        <script src="_js/checkMultiple.js"></script>
         </main>
     </body>
 </html>

@@ -11,24 +11,8 @@ use frontRow\User;
 require_once '_includes/pdoConnect.php';
 require_once '_includes/authenticate.php';
 include_once '_includes/frontRow/Announcement.php';
-include_once '_includes/frontRow/Module.php';
-include_once '_includes/frontRow/User.php';
-
-//Set Modules up, for module navigation, moduleSetup is slightly more complex in module.php as there is also a current module
-$stmt = $db->prepare('SELECT module.moduleID, module.moduleName
-FROM module, userModule
-WHERE module.moduleID=userModule.moduleID AND userModule.kNumber=:kNumber');
-$stmt->bindParam(':kNumber', $_SESSION['username']);
-$stmt->execute();
-
-$modules = $stmt->fetchAll(PDO::FETCH_CLASS, 'Module');
-
-foreach($modules as $module) {
-    
-    $module->setModulePage($db);    
-    $numberOfPages = count($module->modulePage);
-}
-
+require_once '_includes/frontRow/Module.php';
+require_once '_includes/frontRow/User.php';
 
 //Set up user
 $stmt = $db->prepare('SELECT *
@@ -37,11 +21,17 @@ WHERE user.kNumber=:kNumber');
 $stmt->bindParam(':kNumber', $_SESSION['username']);
 $stmt->execute();
 
-$userArr = $stmt->fetchAll(PDO::FETCH_CLASS, 'User');
+$user = $stmt->fetchObject('User');
 
-$user = $userArr[0];
+//Set Modules up, for module navigation, moduleSetup is slightly more complex in module.php as there is also a current module
+$user->setModules($db);
+$modules = $user->modules;
 
-//print_r($user);
+foreach($modules as $module) {
+    
+    $module->setModulePage($db);    
+//    $numberOfPages = count($module->modulePage);
+}
 
 //Set up announcements, these are only used by the homepage
 $announcementStmt = $db->prepare('SELECT * FROM announcement');
@@ -84,15 +74,7 @@ $announcements = $announcementStmt->fetchAll(PDO::FETCH_CLASS, 'announcement');
         </nav>
         </header>
         <nav>
-            <?php foreach($modules as $module) : ?>
-            <section>
-                <h2><?= $module->moduleName ?></h2>
-                <?php $numberOfPages = count($module->modulePage); ?>
-                    <?php for ($i = 0; $i < $numberOfPages; $i++) : ?>
-                         <a href="module.php?moduleID=<?= $module->moduleID ?>&amp;modulePage=<?= $module->modulePage[$i] ?>"><?= $module->modulePage[$i] ?></a>
-                    <?php endfor ?>
-            </section>
-            <?php endforeach ?>
+            <?php include_once '_includes/moduleNav.php'; ?>
         </nav>
         <main>
             <article>
