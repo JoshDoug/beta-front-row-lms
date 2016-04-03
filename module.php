@@ -1,7 +1,16 @@
 <?php
+
+use frontRow\Comment;
+use frontRow\Link;
+use frontRow\Module;
+use frontRow\ModulePage;
+use frontRow\Post;
+use frontRow\UploadFile;
+use frontRow\User;
+
 require_once '_includes/pdoConnect.php';
 require_once '_includes/authenticate.php';
-include_once '_includes/module.php';
+require_once '_includes/frontRow/Module.php';
 
 if(isset($_GET['moduleID'])) {
     //Check that the module exists, avoids any randoom user additions to the _GET

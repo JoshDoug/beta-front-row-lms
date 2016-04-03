@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Mar 29, 2016 at 06:22 PM
+-- Generation Time: Apr 03, 2016 at 06:12 PM
 -- Server version: 5.5.42
 -- PHP Version: 7.0.0
 
@@ -106,6 +106,60 @@ INSERT INTO `modulePage` (`pageID`, `moduleID`, `pageName`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `post`
+--
+
+CREATE TABLE `post` (
+  `postID` int(7) NOT NULL,
+  `pageID` int(7) NOT NULL,
+  `title` varchar(30) NOT NULL,
+  `content` text NOT NULL,
+  `commentsAllowed` tinyint(1) NOT NULL DEFAULT '0',
+  `dateTimePosted` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `postComment`
+--
+
+CREATE TABLE `postComment` (
+  `commentID` int(7) NOT NULL,
+  `postID` int(7) NOT NULL,
+  `kNumber` varchar(10) NOT NULL,
+  `commentText` text NOT NULL,
+  `dateTimeCommented` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `postFile`
+--
+
+CREATE TABLE `postFile` (
+  `postID` int(7) NOT NULL,
+  `fileID` int(7) NOT NULL,
+  `fileName` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `postLink`
+--
+
+CREATE TABLE `postLink` (
+  `linkID` int(7) NOT NULL,
+  `postID` int(7) NOT NULL,
+  `linkName` varchar(30) NOT NULL,
+  `linkHref` varchar(256) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `user`
 --
 
@@ -186,6 +240,36 @@ ALTER TABLE `modulePage`
   ADD KEY `moduleID` (`moduleID`);
 
 --
+-- Indexes for table `post`
+--
+ALTER TABLE `post`
+  ADD PRIMARY KEY (`postID`),
+  ADD KEY `pageID` (`pageID`);
+
+--
+-- Indexes for table `postComment`
+--
+ALTER TABLE `postComment`
+  ADD PRIMARY KEY (`commentID`),
+  ADD KEY `postID` (`postID`),
+  ADD KEY `kNumber` (`kNumber`);
+
+--
+-- Indexes for table `postFile`
+--
+ALTER TABLE `postFile`
+  ADD PRIMARY KEY (`fileID`),
+  ADD KEY `postID` (`postID`),
+  ADD KEY `postID_2` (`postID`);
+
+--
+-- Indexes for table `postLink`
+--
+ALTER TABLE `postLink`
+  ADD PRIMARY KEY (`linkID`),
+  ADD KEY `postID` (`postID`);
+
+--
 -- Indexes for table `user`
 --
 ALTER TABLE `user`
@@ -215,6 +299,26 @@ ALTER TABLE `announcement`
 ALTER TABLE `modulePage`
   MODIFY `pageID` int(7) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=23;
 --
+-- AUTO_INCREMENT for table `post`
+--
+ALTER TABLE `post`
+  MODIFY `postID` int(7) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `postComment`
+--
+ALTER TABLE `postComment`
+  MODIFY `commentID` int(7) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `postFile`
+--
+ALTER TABLE `postFile`
+  MODIFY `fileID` int(7) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `postLink`
+--
+ALTER TABLE `postLink`
+  MODIFY `linkID` int(7) NOT NULL AUTO_INCREMENT;
+--
 -- Constraints for dumped tables
 --
 
@@ -223,6 +327,32 @@ ALTER TABLE `modulePage`
 --
 ALTER TABLE `modulePage`
   ADD CONSTRAINT `modulepage_ibfk_1` FOREIGN KEY (`moduleID`) REFERENCES `module` (`moduleID`);
+
+--
+-- Constraints for table `post`
+--
+ALTER TABLE `post`
+  ADD CONSTRAINT `pageID` FOREIGN KEY (`pageID`) REFERENCES `modulePage` (`pageID`);
+
+--
+-- Constraints for table `postComment`
+--
+ALTER TABLE `postComment`
+  ADD CONSTRAINT `postcomment_ibfk_2` FOREIGN KEY (`kNumber`) REFERENCES `user` (`kNumber`),
+  ADD CONSTRAINT `postcomment_ibfk_1` FOREIGN KEY (`postID`) REFERENCES `post` (`postID`);
+
+--
+-- Constraints for table `postFile`
+--
+ALTER TABLE `postFile`
+  ADD CONSTRAINT `postfile_ibfk_1` FOREIGN KEY (`postID`) REFERENCES `post` (`postID`),
+  ADD CONSTRAINT `postID` FOREIGN KEY (`postID`) REFERENCES `post` (`postID`);
+
+--
+-- Constraints for table `postLink`
+--
+ALTER TABLE `postLink`
+  ADD CONSTRAINT `postlink_ibfk_1` FOREIGN KEY (`postID`) REFERENCES `post` (`postID`);
 
 --
 -- Constraints for table `userModule`

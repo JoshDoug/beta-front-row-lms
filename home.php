@@ -1,9 +1,18 @@
 <?php
+
+use frontRow\Announcement;
+use frontRow\Link;
+use frontRow\Module;
+use frontRow\ModulePage;
+use frontRow\Post;
+use frontRow\UploadFile;
+use frontRow\User;
+
 require_once '_includes/pdoConnect.php';
 require_once '_includes/authenticate.php';
-include_once '_includes/announcement.php';
-include_once '_includes/module.php';
-include_once '_includes/user.php';
+include_once '_includes/frontRow/Announcement.php';
+include_once '_includes/frontRow/Module.php';
+include_once '_includes/frontRow/User.php';
 
 //Set Modules up, for module navigation, moduleSetup is slightly more complex in module.php as there is also a current module
 $stmt = $db->prepare('SELECT module.moduleID, module.moduleName
@@ -12,7 +21,7 @@ WHERE module.moduleID=userModule.moduleID AND userModule.kNumber=:kNumber');
 $stmt->bindParam(':kNumber', $_SESSION['username']);
 $stmt->execute();
 
-$modules = $stmt->fetchAll(PDO::FETCH_CLASS, 'module');
+$modules = $stmt->fetchAll(PDO::FETCH_CLASS, 'Module');
 
 foreach($modules as $module) {
     
@@ -28,7 +37,7 @@ WHERE user.kNumber=:kNumber');
 $stmt->bindParam(':kNumber', $_SESSION['username']);
 $stmt->execute();
 
-$userArr = $stmt->fetchAll(PDO::FETCH_CLASS, 'user');
+$userArr = $stmt->fetchAll(PDO::FETCH_CLASS, 'User');
 
 $user = $userArr[0];
 
@@ -75,37 +84,15 @@ $announcements = $announcementStmt->fetchAll(PDO::FETCH_CLASS, 'announcement');
         </nav>
         </header>
         <nav>
-            
             <?php foreach($modules as $module) : ?>
             <section>
                 <h2><?= $module->moduleName ?></h2>
                 <?php $numberOfPages = count($module->modulePage); ?>
                     <?php for ($i = 0; $i < $numberOfPages; $i++) : ?>
-<!--                         <a href="module.php?moduleID=<?= $module->moduleID ?>&amp;modulePage=<?= $i ?>"><?= $module->modulePage[$i] ?></a>-->
                          <a href="module.php?moduleID=<?= $module->moduleID ?>&amp;modulePage=<?= $module->modulePage[$i] ?>"><?= $module->modulePage[$i] ?></a>
                     <?php endfor ?>
             </section>
             <?php endforeach ?>
-<!--
-            <section>
-                <h2>Module 1</h2>
-                <a href="#">Example Page</a>
-                <a href="#">Example Page</a>
-                <a href="#">Example Page</a>
-                <a href="#">Example Page</a>
-            </section>
-            <section>
-                <h2>Module 2</h2>
-                <a href="#">Example Page</a>
-                <a href="#">Example Page</a>
-            </section>
-            <section>
-                <h2>Module 3</h2>
-            </section>
-            <section>
-                <h2>Module 4</h2>
-            </section>
--->
         </nav>
         <main>
             <article>
@@ -118,21 +105,6 @@ $announcements = $announcementStmt->fetchAll(PDO::FETCH_CLASS, 'announcement');
                     <p><?= $announcement->datePosted ?></p>
                 </section>
                 <?php endforeach ?>
-                
-<!--
-                <section>
-                    <h3>IT Maintenance</h3>
-                    <p>LMS may be down xx/xx/2016 until xx/xx/2016, thank you for your patience.</p>
-                </section>
-                <section>
-                    <h3>Fund Raiser</h3>
-                    <p>There will be a fund raiser for some cause held in the cafeteria from 11am until 3pm, there will be lots of brownies and cupcakes to purchase.</p>
-                </section>
-                <section>
-                    <h3>Mindfullness Talk!</h3>
-                    <p>Please RSVP ASAP.</p>
-                </section>
--->
             </article>
             <article>
                 <h2>Module Announcements</h2>
