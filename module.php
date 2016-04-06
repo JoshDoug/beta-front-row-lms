@@ -44,6 +44,8 @@ if(isset($_GET['moduleID'])) {
         //Create var for current module
         $currentModule;
         
+//        $currentModule = $_GET['moduleID'];
+        
         foreach($modules as $module) {
             $module->setModulePage($db);
             if ($_GET['moduleID'] == $module->moduleID) {
@@ -51,14 +53,32 @@ if(isset($_GET['moduleID'])) {
             }
         }
         
+        if(!isset($currentModule)) {
+            $stmt = $db->prepare('SELECT *
+            FROM module
+            WHERE moduleID = :moduleID');
+            $stmt->bindParam(':moduleID', $_GET['moduleID']);
+            $stmt->execute();
+            $currentModule = $stmt->fetchObject('Module');
+            $currentModule->setModulePage($db);
+        }
+        
         if(isset($_GET['modulePage'])) {
             if(in_array($_GET['modulePage'], $currentModule->modulePage)) {
                 $currentModule->setCurrentPage($db, $_GET['modulePage']);
             } else {
-                $currentModule->setCurrentPage($db, $currentModule->modulePage[0]);
+                if(isset($currentModule->modulePage[0])) {
+                    $currentModule->setCurrentPage($db, $currentModule->modulePage[0]);
+                } else {
+                    header('Location: home.php');
+                }
             }
         } else {
-            $currentModule->setCurrentPage($db, $currentModule->modulePage[0]);
+            if(isset($currentModule->modulePage[0])) {
+                $currentModule->setCurrentPage($db, $currentModule->modulePage[0]);
+            } else {
+                header('Location: home.php');
+            }
         }
         
         $currentPage = $currentModule->currentPage;

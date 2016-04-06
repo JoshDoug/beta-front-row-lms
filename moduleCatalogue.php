@@ -33,6 +33,12 @@ foreach($modules as $module) {
 //    $numberOfPages = count($module->modulePage);
 }
 
+//Set up module catalogue
+
+$stmt = $db->prepare('SELECT * FROM module');
+$stmt->execute();
+$allModules = $stmt->fetchAll(PDO::FETCH_CLASS, 'Module');
+
 ?>
 
 <!DOCTYPE html>
@@ -77,7 +83,15 @@ foreach($modules as $module) {
             <?php include_once '_includes/moduleNav.php'; ?>
         </nav>
         <main>
-            
+            <article>
+                <h2>List of Modules</h2>
+                <?php foreach($allModules as $module) : ?>
+                <section>
+                    <h3><a href="module.php?moduleID=<?= $module->moduleID ?>"><?= $module->moduleID ?> : <?= $module->moduleName ?></a></h3>
+                    <p><?= $module->moduleDescription ?></p>
+                </section>
+                <?php endforeach; ?>
+            </article>
             
             
             
@@ -100,7 +114,7 @@ foreach($modules as $module) {
                 <section>
                     <h3>SOme Moudle Name and ID</h3>
                     <p>The description of the module!</p>
-                </section>                
+                </section>           
             </article>
         </main>
     </body>
