@@ -287,7 +287,7 @@ if(isset($_GET['moduleID'])) {
                 <p>Files:</p>
                 <?php
                     foreach($postFileArr as $linkedFile){
-                        echo '<p><a target="_blank" href="/_uploads/' . $moduleID . $linkedFile . '">' . $linkedFile . '</a></p>';
+                        echo '<p><a download target="_blank" href="_uploads/' . $moduleID . $linkedFile . '">' . $linkedFile . '</a></p>';
                     }
 
                 ?>
