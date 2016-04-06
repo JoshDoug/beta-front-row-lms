@@ -92,30 +92,6 @@ $allModules = $stmt->fetchAll(PDO::FETCH_CLASS, 'Module');
                 </section>
                 <?php endforeach; ?>
             </article>
-            
-            
-            
-            <section>
-                <h2>Lecture 3 Slides</h2>
-                <p>Some Description.</p>
-                <a href="#">Link to module</a>
-            </section>
-            
-            <article>
-                <h2>List of Modules</h2>
-                <section>
-                    <h3>SOme Moudle Name and ID</h3>
-                    <p>The description of the module!</p>
-                </section>
-                <section>
-                    <h3>SOme Moudle Name and ID</h3>
-                    <p>The description of the module!</p>
-                </section>
-                <section>
-                    <h3>SOme Moudle Name and ID</h3>
-                    <p>The description of the module!</p>
-                </section>           
-            </article>
         </main>
     </body>
 </html>
