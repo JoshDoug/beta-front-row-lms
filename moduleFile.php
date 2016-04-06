@@ -53,7 +53,7 @@ $max = 32000000;
 $result = [];
 
 $moduleID = $_GET['moduleID'];
-$destination = __DIR__ . '/_uploads/' . $moduleID;
+$destination = __DIR__ . '/_uploads/' . $moduleID . '/';
 
 if(!is_dir($destination)) {
     mkdir($destination, 0755);
@@ -162,7 +162,7 @@ $error = error_get_last();
             <h2>Files</h2>
             <ul>
             <?php foreach($files as $file) : ?>
-                <li><a href="<?php echo '/_uploads/' . $file ?>" target="_blank"><?= $file ?></a></li>
+                <li><a href="<?php echo $destination . $file ?>" target="_blank"><?= $file ?></a></li>
             <?php endforeach ?>
             </ul>
         </section>
