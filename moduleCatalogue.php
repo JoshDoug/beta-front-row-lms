@@ -57,7 +57,7 @@ $allModules = $stmt->fetchAll(PDO::FETCH_CLASS, 'Module');
         <link rel="stylesheet" href="_css/layout.css">
         
         <script>
-//            var showLectureUtils = <?= $_SESSION['showUtils'] ?>
+//            var showLectureUtils = $_SESSION['showUtils'] or something like that
         </script>
         
     </head>

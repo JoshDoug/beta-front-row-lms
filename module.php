@@ -243,8 +243,8 @@ if(isset($_GET['moduleID'])) {
                         <?php $directoryContents = scandir($destination);
                         $files = array_diff($directoryContents, array('.', '..')); ?>
                         <p>Add files to post or remove files:</p>
-                        <button id="addFileChoice">Add File</button>
-                        <button id="removeFileChoice">Remove File</button>
+                        <button type="button" id="addFileChoice">Add File</button>
+                        <button type="button" id="removeFileChoice">Remove File</button>
                         <div id="file-choice-section">
                             <select class="fileChoice" name="fileChoice[]">
                                 <?php foreach($files as $file) : ?>
@@ -260,8 +260,8 @@ if(isset($_GET['moduleID'])) {
                             </select>
                         </div>
                         <p>Add links to post or remove links:</p>
-                        <button id="addLinkChoice">Add Link</button>
-                        <button id="removeLinkChoice">Remove Link</button>
+                        <button type="button" id="addLinkChoice">Add Link</button>
+                        <button type="button" id="removeLinkChoice">Remove Link</button>
                         <div id="link-choice"></div>
 
                         <input type="submit" name="makePost">
