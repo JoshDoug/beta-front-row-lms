@@ -1,6 +1,6 @@
         var fileSection = document.getElementById("file-choice-section");
         var getSelectElement = document.getElementsByClassName("fileChoice")[0];
-        var fileSelector = getSelectElement.cloneNode(true);
+//        var fileSelector = getSelectElement.cloneNode(true);
         
         fileSection.removeChild(fileSection.lastChild);
         fileSection.removeChild(fileSection.lastChild);

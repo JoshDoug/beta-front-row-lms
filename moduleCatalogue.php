@@ -1,3 +1,40 @@
+<?php
+
+use frontRow\Announcement;
+use frontRow\Link;
+use frontRow\Module;
+use frontRow\ModulePage;
+use frontRow\Post;
+use frontRow\UploadFile;
+use frontRow\User;
+
+require_once '_includes/pdoConnect.php';
+require_once '_includes/authenticate.php';
+include_once '_includes/frontRow/Announcement.php';
+require_once '_includes/frontRow/Module.php';
+require_once '_includes/frontRow/User.php';
+
+//Set up user
+$stmt = $db->prepare('SELECT *
+FROM user
+WHERE user.kNumber=:kNumber');
+$stmt->bindParam(':kNumber', $_SESSION['username']);
+$stmt->execute();
+
+$user = $stmt->fetchObject('User');
+
+//Set Modules up, for module navigation, moduleSetup is slightly more complex in module.php as there is also a current module
+$user->setModules($db);
+$modules = $user->modules;
+
+foreach($modules as $module) {
+    
+    $module->setModulePage($db);    
+//    $numberOfPages = count($module->modulePage);
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -12,6 +49,11 @@
         <link rel="shortcut icon" href="/_img/favicon.ico" type="image/x-icon">
         
         <link rel="stylesheet" href="_css/layout.css">
+        
+        <script>
+//            var showLectureUtils = <?= $_SESSION['showUtils'] ?>
+        </script>
+        
     </head>
     <body>
         <header>
@@ -32,31 +74,34 @@
         </nav>
         </header>
         <nav>
-            <section>
-                <h2>Module 1</h2>
-                <a href="#">Example Page</a>
-                <a href="#">Example Page</a>
-                <a href="#">Example Page</a>
-                <a href="#">Example Page</a>
-            </section>
-            <section>
-                <h2>Module 2</h2>
-                <a href="#">Example Page</a>
-                <a href="#">Example Page</a>
-            </section>
-            <section>
-                <h2>Module 3</h2>
-            </section>
-            <section>
-                <h2>Module 4</h2>
-            </section>
+            <?php include_once '_includes/moduleNav.php'; ?>
         </nav>
         <main>
+            
+            
+            
+            
             <section>
                 <h2>Lecture 3 Slides</h2>
                 <p>Some Description.</p>
                 <a href="#">Link to module</a>
             </section>
+            
+            <article>
+                <h2>List of Modules</h2>
+                <section>
+                    <h3>SOme Moudle Name and ID</h3>
+                    <p>The description of the module!</p>
+                </section>
+                <section>
+                    <h3>SOme Moudle Name and ID</h3>
+                    <p>The description of the module!</p>
+                </section>
+                <section>
+                    <h3>SOme Moudle Name and ID</h3>
+                    <p>The description of the module!</p>
+                </section>                
+            </article>
         </main>
     </body>
 </html>
