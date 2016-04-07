@@ -1,9 +1,18 @@
-<?php $isFirst = true; ?>
+<?php
+
+$isFirst = true;
+//Not really necessary, but nice.
+$userModuleIDs = [];
+foreach($modules as $module) {
+    array_push($userModuleIDs, $module->moduleID);
+}
+
+?>
 <?php foreach($modules as $module) : ?>
             <section>
                 <h2 <?php 
                     
-                    if (isset($currentModule)) {
+                    if (isset($currentModule) && in_array($currentModule->moduleID, $userModuleIDs)) {
                         if($currentModule->moduleID != $module->moduleID) {
                             ?> class="hide" <?php
                         }
@@ -33,8 +42,6 @@
                     $showPage = false;
                 }
                 ?>
-                
-                
                 <?php if($showPage) : ?>
                     <a href="moduleFile.php?moduleID=<?= $module->moduleID ?>">Module Files</a>
                 <?php endif ?>

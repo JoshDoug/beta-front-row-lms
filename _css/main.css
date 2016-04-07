@@ -14,3 +14,15 @@ nav section h2:hover {
 nav section h2.hide ~ a {
     display: none;
 }
+
+nav section h2.hide::after {
+    display: inline-block;
+    transform: rotate(90deg);
+}
+
+nav section h2::after {
+/*    content: url('_img/ic_arrow_drop_down_black_24px.svg');*/
+    content: url("../_img/ic_arrow_drop_down_black_24px.svg");
+    position: relative;
+    float: right;
+}

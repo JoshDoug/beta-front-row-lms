@@ -93,5 +93,6 @@ $allModules = $stmt->fetchAll(PDO::FETCH_CLASS, 'Module');
                 <?php endforeach; ?>
             </article>
         </main>
+        <script src="_js/navToggle.js"></script>
     </body>
 </html>

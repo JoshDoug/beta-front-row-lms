@@ -153,21 +153,20 @@ $error = error_get_last();
                     </ul>
                 </form>
             </section>
-        
-        <?php 
-            $directoryContents = scandir($destination);
-            $files = array_diff($directoryContents, array('.', '..'));    
-        ?>
-        <section>
-            <h2>Files</h2>
-            <ul>
-            <?php foreach($files as $file) : ?>
-                <li><a href="<?php echo $destination . $file ?>" target="_blank"><?= $file ?></a></li>
-            <?php endforeach ?>
-            </ul>
-        </section>
-        
-        <script src="_js/checkMultiple.js"></script>
+            <?php 
+                $directoryContents = scandir($destination);
+                $files = array_diff($directoryContents, array('.', '..'));    
+            ?>
+            <section>
+                <h2>Files</h2>
+                <ul>
+                <?php foreach($files as $file) : ?>
+                    <li><a href="<?php echo $destination . $file ?>" target="_blank"><?= $file ?></a></li>
+                <?php endforeach ?>
+                </ul>
+            </section>
         </main>
+        <script src="_js/checkMultiple.js"></script>
+        <script src="_js/navToggle.js"></script>
     </body>
 </html>
