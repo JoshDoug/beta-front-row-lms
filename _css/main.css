@@ -5,3 +5,12 @@
 body{
 	font-family: 'Abel',sans-serif;
 }
+
+/* Nav switcher toggle */
+nav section h2:hover {
+    cursor: pointer;
+}
+
+nav section h2.hide ~ a {
+    display: none;
+}

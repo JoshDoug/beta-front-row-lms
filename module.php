@@ -333,5 +333,6 @@ if(isset($_GET['moduleID'])) {
             <?php endforeach ?>
         </main>
     <script src="_js/postOptions.js"></script>
+    <script src="_js/navToggle.js"></script>
     </body>
 </html>

@@ -104,5 +104,6 @@ $announcements = $announcementStmt->fetchAll(PDO::FETCH_CLASS, 'announcement');
                 </section>
             </article>
         </main>
+        <script src="_js/navToggle.js"></script>
     </body>
 </html>
