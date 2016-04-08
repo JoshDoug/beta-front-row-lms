@@ -32,10 +32,11 @@ require_once '_includes/loginUser.php';
                             echo "<p style=\"color: white\">$error</p>";
                         }
                     ?>
-                <input type="text" name="kNumber" placeholder="K Number">
-                <input type="password" name="pwd" placeholder="Password">
+                <input type="text" name="kNumber" placeholder="K Number" id="kNumber" required>
+                <input type="password" name="pwd" placeholder="Password" required>
                 <input type="submit" name="login" value="Log In">
             </form>
         </main>
+        <script src="_js/clientLoginCheck.js"></script>
     </body>
 </html>
