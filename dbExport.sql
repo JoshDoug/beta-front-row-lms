@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Apr 03, 2016 at 06:12 PM
+-- Generation Time: Apr 08, 2016 at 08:45 PM
 -- Server version: 5.5.42
 -- PHP Version: 7.0.0
 
@@ -25,7 +25,7 @@ CREATE TABLE `announcement` (
   `title` varchar(30) NOT NULL,
   `content` text NOT NULL,
   `datePosted` datetime NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `announcement`
@@ -34,7 +34,8 @@ CREATE TABLE `announcement` (
 INSERT INTO `announcement` (`announcementID`, `title`, `content`, `datePosted`) VALUES
 (1, 'IT Maintenance', 'LMS may be down from Monday 6pm until Tuesday 2am, thank you for your patience.', '2016-03-26 14:24:12'),
 (3, 'Fund Raiser', 'There will be a fund raiser for some cause held in the cafeteria from 11am until 3pm Thursday, there will be lots of brownies and cupcakes to purchase.', '2016-03-29 12:38:39'),
-(4, 'Mindfullness Talk', 'Please RSVP ASAP a ku12456@kingston.ac.uk, thank you.\r\n', '2016-03-30 10:39:30');
+(4, 'Mindfullness Talk', 'Please RSVP ASAP a ku12456@kingston.ac.uk, thank you.\r\n', '2016-03-30 10:39:30'),
+(5, 'Exam Timetables Available', 'Exam Timetables are now up, access them on MyKingston, My University > Exams > Examination Dates and Timetables.', '2016-04-11 11:24:08');
 
 -- --------------------------------------------------------
 
@@ -73,7 +74,7 @@ CREATE TABLE `modulePage` (
   `pageID` int(7) NOT NULL,
   `moduleID` varchar(8) NOT NULL,
   `pageName` text NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `modulePage`
@@ -101,7 +102,13 @@ INSERT INTO `modulePage` (`pageID`, `moduleID`, `pageName`) VALUES
 (19, 'CI5410', 'Announcements'),
 (20, 'CI5410', 'Module Info'),
 (21, 'CI5410', 'Lectures'),
-(22, 'CI5410', 'Coursework');
+(22, 'CI5410', 'Coursework'),
+(23, 'CI5420', 'Announcements'),
+(24, 'CI5420', 'Module Info'),
+(25, 'CI5420', 'Business Secrets'),
+(26, 'CI5420', 'Tony Robbins wants your money'),
+(27, 'CI5420', 'A penny saved is a penny earned'),
+(28, 'CI4200', 'Test Page');
 
 -- --------------------------------------------------------
 
@@ -116,7 +123,7 @@ CREATE TABLE `post` (
   `content` text NOT NULL,
   `commentsAllowed` tinyint(1) NOT NULL DEFAULT '0',
   `dateTimePosted` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -130,7 +137,7 @@ CREATE TABLE `postComment` (
   `kNumber` varchar(10) NOT NULL,
   `commentText` text NOT NULL,
   `dateTimeCommented` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -142,7 +149,7 @@ CREATE TABLE `postFile` (
   `postID` int(7) NOT NULL,
   `fileID` int(7) NOT NULL,
   `fileName` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -155,7 +162,7 @@ CREATE TABLE `postLink` (
   `postID` int(7) NOT NULL,
   `linkName` varchar(30) NOT NULL,
   `linkHref` varchar(256) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -292,32 +299,32 @@ ALTER TABLE `userModule`
 -- AUTO_INCREMENT for table `announcement`
 --
 ALTER TABLE `announcement`
-  MODIFY `announcementID` int(7) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+  MODIFY `announcementID` int(7) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `modulePage`
 --
 ALTER TABLE `modulePage`
-  MODIFY `pageID` int(7) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=23;
+  MODIFY `pageID` int(7) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=29;
 --
 -- AUTO_INCREMENT for table `post`
 --
 ALTER TABLE `post`
-  MODIFY `postID` int(7) NOT NULL AUTO_INCREMENT;
+  MODIFY `postID` int(7) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT for table `postComment`
 --
 ALTER TABLE `postComment`
-  MODIFY `commentID` int(7) NOT NULL AUTO_INCREMENT;
+  MODIFY `commentID` int(7) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT for table `postFile`
 --
 ALTER TABLE `postFile`
-  MODIFY `fileID` int(7) NOT NULL AUTO_INCREMENT;
+  MODIFY `fileID` int(7) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT for table `postLink`
 --
 ALTER TABLE `postLink`
-  MODIFY `linkID` int(7) NOT NULL AUTO_INCREMENT;
+  MODIFY `linkID` int(7) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
 --
 -- Constraints for dumped tables
 --
@@ -338,8 +345,8 @@ ALTER TABLE `post`
 -- Constraints for table `postComment`
 --
 ALTER TABLE `postComment`
-  ADD CONSTRAINT `postcomment_ibfk_2` FOREIGN KEY (`kNumber`) REFERENCES `user` (`kNumber`),
-  ADD CONSTRAINT `postcomment_ibfk_1` FOREIGN KEY (`postID`) REFERENCES `post` (`postID`);
+  ADD CONSTRAINT `postcomment_ibfk_1` FOREIGN KEY (`postID`) REFERENCES `post` (`postID`),
+  ADD CONSTRAINT `postcomment_ibfk_2` FOREIGN KEY (`kNumber`) REFERENCES `user` (`kNumber`);
 
 --
 -- Constraints for table `postFile`

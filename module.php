@@ -214,7 +214,7 @@ if(isset($_GET['moduleID'])) {
         }
         
         //Select posts
-        $sql = 'SELECT * FROM Post WHERE pageID = :pageID';
+        $sql = 'SELECT * FROM post WHERE pageID = :pageID';
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':pageID', $currentPageID);
         $stmt->execute();

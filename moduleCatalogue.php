@@ -71,9 +71,9 @@ $allModules = $stmt->fetchAll(PDO::FETCH_CLASS, 'Module');
             <div class="dropdown">
                 <a href="#" class="dropdown-toggle">User Information</a>
                 <ul class="dropdown-content">
-                    <li><a href="#">KNumber</a></li>
-                    <li><a href="#">Email</a></li>
-                    <li><a href="#">Name</a></li>
+                    <li><a href="#"><?= $user->kNumber ?></a></li>
+                    <li><a href="#"><?= $user->fName ?></a></li>
+                    <li><a href="#"><?= $user->lName ?></a></li>
                 </ul>
             </div>
             <a id="logout" href="logout.php">Logout</a>
