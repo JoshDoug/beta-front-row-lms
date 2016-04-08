@@ -174,6 +174,45 @@ if(isset($_GET['moduleID'])) {
             $stmt->execute();
         }
         
+        //Delete Post
+        if(isset($_POST['deletePost'])) {
+            //To delete a post, it's first necessary to delete everything associated to the foreign key, or use a cascade?
+            //Delete PostFile Links, don't delete File as other posts may be link to the same file.
+            $sql = 'DELETE FROM postFile
+                    WHERE postID = :postID';
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam(':postID', $_POST['postID']);
+            $stmt->execute();
+            //Delete postLinks
+            $sql = 'DELETE FROM postLink
+                    WHERE postID = :postID';
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam(':postID', $_POST['postID']);
+            $stmt->execute();
+            //Delete Comments on the post
+            $sql = 'DELETE FROM postComment
+                    WHERE postID = :postID';
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam(':postID', $_POST['postID']);
+            $stmt->execute();
+            
+            //Delete the post itself
+            $sql = 'DELETE FROM post
+                    WHERE postID = :postID';
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam(':postID', $_POST['postID']);
+            $stmt->execute();
+        }
+        
+        if(isset($_POST['deleteComment'])) {
+            //Delete Comment on the post
+            $sql = 'DELETE FROM postComment
+                    WHERE commentID = :commentID';
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam(':commentID', $_POST['commentID']);
+            $stmt->execute();
+        }
+        
         //Select posts
         $sql = 'SELECT * FROM Post WHERE pageID = :pageID';
         $stmt = $db->prepare($sql);
@@ -234,37 +273,37 @@ if(isset($_GET['moduleID'])) {
                 <section>
                     <!--     POST CREATION FORM               -->
                     <form method="post" action="">
-                        <p>Enter Post Title:</p>
-                        <input type="text" name="postTitle">
-                        <p>Enter Post Content:</p>
-                        <input type="text" name="postContent">
-                        <p>Comments allowed:</p>
-                        <input type="checkbox" name="commentsAllowed">
-                        <?php $directoryContents = scandir($destination);
-                        $files = array_diff($directoryContents, array('.', '..')); ?>
-                        <p>Add files to post or remove files:</p>
-                        <button type="button" id="addFileChoice">Add File</button>
-                        <button type="button" id="removeFileChoice">Remove File</button>
-                        <div id="file-choice-section">
-                            <select class="fileChoice" name="fileChoice[]">
-                                <?php foreach($files as $file) : ?>
-                                <?php if($file != "." || $file != "..") : ?>
-                                    <option value="<?= $file ?>"><?= $file ?></option>
-                                <?php endif ?>
-
-                                <?php if($file == "."){
-                                        echo 'It equals .';
-                                    }
-                                ?>
-                                <?php endforeach ?>
-                            </select>
-                        </div>
-                        <p>Add links to post or remove links:</p>
-                        <button type="button" id="addLinkChoice">Add Link</button>
-                        <button type="button" id="removeLinkChoice">Remove Link</button>
-                        <div id="link-choice"></div>
-
-                        <input type="submit" name="makePost">
+                        <div>
+                            <div>
+                                <p>Enter Post Title:</p>
+                                <input type="text" name="postTitle">
+                                <p>Enter Post Content:</p>
+                                <textarea type="text" name="postContent"></textarea>
+                                <p>Comments allowed:</p>
+                                <input type="checkbox" name="commentsAllowed">
+                            </div>
+                            <?php $directoryContents = scandir($destination);
+                            $files = array_diff($directoryContents, array('.', '..')); ?>
+                            <div>
+                                <p>Add files to post or remove files:</p>
+                                <button type="button" id="addFileChoice">Add File</button>
+                                <button type="button" id="removeFileChoice">Remove File</button>
+                                <div id="file-choice-section">
+                                    <select class="fileChoice" name="fileChoice[]">
+                                        <?php foreach($files as $file) : ?>
+                                            <option value="<?= $file ?>"><?= $file ?></option>
+                                        <?php endforeach ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <p>Add links to post or remove links:</p>
+                                <button type="button" id="addLinkChoice">Add Link</button>
+                                <button type="button" id="removeLinkChoice">Remove Link</button>
+                                <div id="link-choice"></div>
+                            </div>
+                            </div>
+                        <input type="submit" name="makePost" value="Create Post">
                     </form>
                 </section>
             </article>
@@ -282,16 +321,16 @@ if(isset($_GET['moduleID'])) {
                     $stmt->bindParam(':postID', $postID);
                     $stmt->execute();
                     $postFileArr = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
-
                 ?>
-                <p>Files:</p>
+                <?php if($postFileArr) : ?>
+                    <h3>Files:</h3>
+                <?php endif ?>
                 <?php
                     foreach($postFileArr as $linkedFile){
                         echo '<p><a download target="_blank" href="_uploads/' . $moduleID . $linkedFile . '">' . $linkedFile . '</a></p>';
                     }
 
                 ?>
-                <p>Links:</p>
                 <?php
                     $sql = 'SELECT * FROM postLink WHERE postID = :postID';
                     $stmt = $db->prepare($sql);
@@ -299,37 +338,53 @@ if(isset($_GET['moduleID'])) {
                     $stmt->execute();
                     $links = $stmt->fetchAll(PDO::FETCH_CLASS, 'Link');
 
+                if($links) : ?>
+                    <h3>Links:</h3>
+                <?php endif ?>            
+                <?php    
                     foreach($links as $link){
                         echo '<p><a target="_blank" href="' . $link->linkHref . '">' . $link->linkName . '</a></p>';
                     }
                 ?>
-                <?php
-                    if($post->commentsAllowed){
+                <?php if($post->commentsAllowed) : ?>
+                    <section>
+                    <?php
                         echo '<p>Comments allowed!</p>';
                         $sql = 'SELECT * FROM postComment WHERE postID = :postID';
                         $stmt = $db->prepare($sql);
                         $stmt->bindParam(':postID', $postID);
                         $stmt->execute();
                         $comments = $stmt->fetchAll(PDO::FETCH_CLASS, 'Comment');
-                        foreach($comments as $comment) {
-                            echo '<h3>' . $comment->kNumber . '</h3>';
-                            echo '<p>' . $comment->commentText . '</p>';
-                        }
-                ?>
-                <form method="post" action="">
-                    <input type="hidden" name="postID" value="<?= $post->postID ?>">
-                    <input type="text" name="commentText">
-                    <input type="submit" name="postComment">
-                </form>
-                <?php
-                    } elseif(!$post->commentsAllowed) {
-                        echo '<p>No comments allowed!</p>';
-                    } else {
-                        echo '<p>Something went wrong.</p>';
-                    }
-                ?>
-                </section>
-            </article>
+                    
+                        foreach($comments as $comment) : ?>
+                            <section class="comments">
+                                <h3><?= $comment->kNumber ?></h3>
+                                <p><?= $comment->commentText ?></p>
+                                <?php if($priv) : ?>
+                                    <form method="post" action="">
+                                        <input type="hidden" name="commentID" value="<?= $comment->commentID ?>">
+                                        <input type="submit" name="deleteComment" value="Delete Comment">
+                                    </form>
+                                <?php endif ?>
+                            </section>
+                        <?php endforeach ?>
+                    </section>
+                    <section>
+                            <form method="post" action="">
+                                <input type="hidden" name="postID" value="<?= $post->postID ?>">
+                                <textarea type="text" name="commentText"></textarea>
+                                <input type="submit" name="postComment" value="Comment">
+                            </form>
+                    </section>
+                        <?php endif ?>
+                        <?php if($priv) : ?>
+                            <form method="post" action="">
+                                <input type="hidden" name="postID" value="<?= $post->postID ?>">
+                                <input type="submit" name="deletePost" value="Delete Post">
+                            </form>
+                        <?php endif ?>
+                    </section>
+                </article>
             <?php endforeach ?>
         </main>
     <script src="_js/postOptions.js"></script>

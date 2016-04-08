@@ -159,6 +159,81 @@ article section a {
     margin: 0.4em;
 }
 
+
+/* Form styling */
+form > div {
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+    flex-wrap: wrap;
+}
+
+form input[type="submit"] {
+    margin-bottom: 10px;
+}
+
+/*
+form input[type="checkbox"] {
+    display: inline;
+}
+*/
+
+/*
+form input[type="file"] {
+    
+}
+*/
+
+form p {
+    margin: 0.5em;
+}
+
+form input[type="file"] {
+    background: #e1e1e1;
+    border-radius: 5px;
+}
+
+form select {
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    background: #f2f2f2;
+    padding: 0.35em 0.75em;
+    font-size: 1.1em;
+    text-decoration: none;
+    border: none;
+    border-radius: 2px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    margin-left: 3px;
+/*    background: url("../_img/ic_arrow_drop_down_black_24px.svg") no-repeat right;*/
+}
+
+form option {
+    font-weight: normal;
+    display: block;
+    white-space: pre;
+    min-height: 1.2em;
+    padding: 0px 2px 1px;
+}
+
+form input, button {
+    margin: 3px;
+}
+
+form button:hover {
+    opacity: 0.5;
+}
+
+#file-choice-section select {
+    display: block;
+}
+form div > div {
+    flex: 1 1 320px;
+}
+
+
 /* Responsive Styles */
 @media (max-width: 1000px) {
     main article, body > nav section {

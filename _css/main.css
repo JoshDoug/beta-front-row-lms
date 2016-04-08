@@ -26,3 +26,32 @@ nav section h2::after {
     position: relative;
     float: right;
 }
+
+input, button, textarea {
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    background: #f2f2f2;
+    padding: 0.35em 0.75em;
+    font-size: 1.1em;
+    text-decoration: none;
+    border: none;
+    border-radius: 2px;
+}
+
+input[type="submit"] {
+    background: #3399ff;
+    text-transform: uppercase;
+    font-weight:bold;
+    color: white;
+}
+
+input[type="submit"]:hover {
+    background: #80bfff;
+}
+
+main section.comments {
+    border-bottom: 0px;
+    border-top: 2px solid #f2f2f2;
+}

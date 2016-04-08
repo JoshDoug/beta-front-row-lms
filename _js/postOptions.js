@@ -7,10 +7,10 @@ fileSection.removeChild(fileSection.lastChild);
 document.getElementById("addFileChoice").addEventListener("click", addFile);
 document.getElementById("removeFileChoice").addEventListener("click", removeFile);
 
-var i = 1;
+var i = 0;
 
 function addFile(){
-    if (i <= 10){
+    if (i <= 13){
         i++;
         tempFileSelector = getSelectElement.cloneNode(true);
         fileSection.appendChild(tempFileSelector);
@@ -18,7 +18,7 @@ function addFile(){
 }
 
 function removeFile() {
-    if(i > 0) {
+    if(i > 4) {
         fileSection.removeChild(fileSection.lastChild);
         i--;
     }
@@ -40,9 +40,11 @@ function addLink(){
         var linkName = document.createElement('input');
         linkName.setAttribute("type", "text");
         linkName.setAttribute("name", "linkName[]");
+        linkName.setAttribute("placeholder", "Link Name");
         var linkHref = document.createElement('input');
         linkHref.setAttribute("type", "text");
         linkHref.setAttribute("name", "linkHref[]");
+        linkHref.setAttribute("placeholder", "Link URL");
         linkSection.appendChild(linkNumb);
         linkSection.appendChild(linkName);
         linkSection.appendChild(linkHref);

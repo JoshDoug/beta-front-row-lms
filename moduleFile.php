@@ -75,6 +75,24 @@ if(isset($_POST['upload'])) {
 $error = error_get_last();
 
 
+//DELTE FILE AND LINKS TO FILE
+if(isset($_POST['deleteFile'])) {
+    //Need to delete all linked files associated with posts first, to avoid void links
+    //Should probably warn user, but is also self explanatory, add warning if time allows.
+    //Delete postFile rows associated with file
+    $sql = 'DELETE FROM postFile
+            WHERE fileName = :fileName';
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam(':fileName', $_POST['fileName']);
+    $stmt->execute();
+    //After postFile rows associated with file have been removed, delete file.
+    
+    $fileAndPath = $destination . $_POST['fileName'];
+    if(file_exists($fileAndPath)) {
+        unlink($fileAndPath);
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -157,14 +175,18 @@ $error = error_get_last();
                 $directoryContents = scandir($destination);
                 $files = array_diff($directoryContents, array('.', '..'));    
             ?>
-            <section>
+            <article>
                 <h2>Files</h2>
-                <ul>
                 <?php foreach($files as $file) : ?>
-                    <li><a href="<?php echo $destination . $file ?>" target="_blank"><?= $file ?></a></li>
+                <section class="fileList">
+                    <p><a href="<?php echo '_uploads/' . $moduleID . '/' .  $file ?>" target="_blank"><?= $file ?></a></p>
+                    <form method="post" action="">
+                        <input type="hidden" name="fileName" value="<?= $file ?>">
+                        <input type="submit" name="deleteFile" value="Delete File">
+                    </form>
+                </section>
                 <?php endforeach ?>
-                </ul>
-            </section>
+            </article>
         </main>
         <script src="_js/checkMultiple.js"></script>
         <script src="_js/navToggle.js"></script>
