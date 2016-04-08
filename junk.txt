@@ -14,3 +14,9 @@
 //                //default to the page at point 0 of the modulePage array
 //            }
 //        }
+
+else if(!$isFirst) {
+                        ?> class="hide" <?php
+                    }
+                    $isFirst = false;
+                    

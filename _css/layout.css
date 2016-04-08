@@ -172,18 +172,6 @@ form input[type="submit"] {
     margin-bottom: 10px;
 }
 
-/*
-form input[type="checkbox"] {
-    display: inline;
-}
-*/
-
-/*
-form input[type="file"] {
-    
-}
-*/
-
 form p {
     margin: 0.5em;
 }
@@ -230,18 +218,24 @@ form button:hover {
     display: block;
 }
 form div > div {
-    flex: 1 1 320px;
+    flex: 1 1 300px;
 }
 
 
 /* Responsive Styles */
+@media (max-width: 1025px) {
+    body nav section, body main article {
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
+
 @media (max-width: 1000px) {
     main article, body > nav section {
         margin-left: 0;
         margin-right: 0;
         margin-top: 0;
     }
-
 }
 
 @media (max-width: 768px) {
@@ -316,12 +310,8 @@ form div > div {
     }
     
     body > nav section {
-        flex: 1 0 159px;
+        flex: 1 1 400px;
         border-radius: 0px;
-        border-right: 1px solid #282C34;
-    }
-    
-    body > nav section:nth-child(odd) {
-        border-right: 1px solid #282C34;
+        margin: 0.2em 0;
     }
 }
