@@ -93,6 +93,15 @@ if(isset($_POST['deleteFile'])) {
     }
 }
 
+if(isset($_POST['newPage'])) {
+    $sql = 'INSERT INTO modulePage (moduleID, pageName)
+            VALUES (:moduleID, :pageName)';
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam(':moduleID', $_GET['moduleID']);
+    $stmt->bindParam(':pageName', $_POST['pageName']);
+    $stmt->execute();
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -112,7 +121,7 @@ if(isset($_POST['deleteFile'])) {
     <body>
         <header>
             <img src="_img/kulogo.png" alt="Kingston University">
-            <h1>Module Catalogue</h1>
+            <h1>Module Administration</h1>
         <nav>
             <a href="home.php">Home</a>
             <a href="moduleCatalogue.php">Module Catalogue</a>
@@ -131,6 +140,17 @@ if(isset($_POST['deleteFile'])) {
             <?php include_once '_includes/moduleNav.php'; ?>
         </nav>
         <main>
+            
+            <article>
+                <h2>Add Module Page</h2>
+                <section>
+                    <form method="post" action="">
+                        <input type="text" name="pageName">
+                        <input type="submit" name="newPage" value="Creat Page">
+                    </form>
+                </section>
+            </article>
+            
             <?php if($result || $error) : ?>
             <section>
                 <h2>File Upload Info:</h2>

@@ -88,21 +88,6 @@ $announcements = $announcementStmt->fetchAll(PDO::FETCH_CLASS, 'announcement');
                 </section>
                 <?php endforeach ?>
             </article>
-            <article>
-                <h2>Module Announcements</h2>
-                <section>
-                    <h3>Programming</h3>
-                    <p>Your marks have been emailed to you, please email me if you have any queries or disagree with the marks you were given!</p>
-                </section>
-                <section>
-                    <h3>Networking</h3>
-                    <p>Remember, your CA CW is due this friday.</p>
-                </section>
-                <section>
-                    <h3>Databases</h3>
-                    <p>You know Oracle DBs, now get ready to learn MySQL which has random differences, but does at least have Autoincrement (phew!).</p>
-                </section>
-            </article>
         </main>
         <script src="_js/navToggle.js"></script>
     </body>
