@@ -308,8 +308,8 @@ if(isset($_GET['moduleID'])) {
                 </section>
             </article>
             <?php endif ?>
-            
-            <?php foreach($posts as $post) : ?>
+            <!-- Print out posts, also revere so newest post is at the top -->
+            <?php foreach(array_reverse($posts) as $post) : ?>
             <article>
                 <h2><?= $post->title ?></h2>
                 <section>
