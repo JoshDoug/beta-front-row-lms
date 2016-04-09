@@ -276,9 +276,9 @@ if(isset($_GET['moduleID'])) {
                         <div>
                             <div>
                                 <p>Enter Post Title:</p>
-                                <input type="text" name="postTitle">
+                                <input type="text" name="postTitle" required>
                                 <p>Enter Post Content:</p>
-                                <textarea type="text" name="postContent"></textarea>
+                                <textarea type="text" name="postContent" required></textarea>
                                 <p>Comments allowed:</p>
                                 <input type="checkbox" name="commentsAllowed">
                             </div>
@@ -372,7 +372,7 @@ if(isset($_GET['moduleID'])) {
                     <section>
                             <form method="post" action="">
                                 <input type="hidden" name="postID" value="<?= $post->postID ?>">
-                                <textarea type="text" name="commentText"></textarea>
+                                <textarea type="text" name="commentText" required></textarea>
                                 <input type="submit" name="postComment" value="Comment">
                             </form>
                     </section>

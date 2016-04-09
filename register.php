@@ -65,7 +65,7 @@ if (isset($_POST['register'])) {
 <form action="<?= $_SERVER['PHP_SELF']; ?>" method="post">
     <p>
         <label for="kNumber">kNumber:</label>
-        <input type="text" name="kNumber" id="kNumber"
+        <input required type="text" name="kNumber" id="kNumber"
         <?php
         if (isset($kNumber) && !isset($errors['kNumber'])) {
             echo 'value="' . htmlentities($kNumber) . '">';
@@ -83,7 +83,7 @@ if (isset($_POST['register'])) {
 <!-- should be required really, will be implemented for beta       -->
     <p>
         <label for="fName">First Name:</label>
-        <input type="text" name="fName" id="fName">
+        <input type="text" name="fName" id="fName" required>
          <?php
         if (isset($errors['fName'])) {
             echo $errors['fName'];
@@ -92,7 +92,7 @@ if (isset($_POST['register'])) {
     </p>
     <p>
         <label for="lName">Last Name:</label>
-        <input type="text" name="lName" id="lName">
+        <input type="text" name="lName" id="lName" required>
         <?php
         if (isset($errors['lName'])) {
             echo $errors['lName'];
@@ -101,7 +101,7 @@ if (isset($_POST['register'])) {
     </p>
     <p>
         <label for="kMail">KU Email:</label>
-        <input type="text" name="kMail" id="kMail">
+        <input type="text" name="kMail" id="kMail" required>
         <?php
         if (isset($errors['kMail'])) {
             echo $errors['kMail'];
@@ -110,7 +110,7 @@ if (isset($_POST['register'])) {
     </p>
     <p>
         <label for="pwd">Password:</label>
-        <input type="password" name="pwd" id="pwd">
+        <input type="password" name="pwd" id="pwd" required>
         <?php
         if (isset($errors['pwd'])) {
             echo $errors['pwd'];
@@ -119,7 +119,7 @@ if (isset($_POST['register'])) {
     </p>
     <p>
         <label for="confirm">Confirm Password:</label>
-        <input type="password" name="confirm" id="confirm">
+        <input type="password" name="confirm" id="confirm" required>
         <?php
         if (isset($errors['confirm'])) {
             echo $errors['confirm'];

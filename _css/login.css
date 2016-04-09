@@ -67,7 +67,7 @@ form {
     }
     
     header::before {
-        position: fixed;
+        position: relative;
         top: 0;
         left: 0;
         background: url('../_img/kulogo.png') no-repeat;

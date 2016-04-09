@@ -145,7 +145,7 @@ if(isset($_POST['newPage'])) {
                 <h2>Add Module Page</h2>
                 <section>
                     <form method="post" action="">
-                        <input type="text" name="pageName">
+                        <input type="text" name="pageName" required>
                         <input type="submit" name="newPage" value="Creat Page">
                     </form>
                 </section>
