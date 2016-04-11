@@ -146,7 +146,7 @@ if(isset($_POST['newPage'])) {
                 <section>
                     <form method="post" action="">
                         <input type="text" name="pageName" required>
-                        <input type="submit" name="newPage" value="Creat Page">
+                        <input type="submit" name="newPage" value="Create Page">
                     </form>
                 </section>
             </article>
