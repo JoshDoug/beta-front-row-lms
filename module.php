@@ -19,7 +19,7 @@ require_once '_includes/frontRow/UploadFile.php';
 require_once '_includes/frontRow/User.php';
 
 if(isset($_GET['moduleID'])) {
-    //Check that the module exists, avoids any randoom user additions to the _GET
+    //Check that the module exists, avoids any random user additions to the _GET
     $sql = 'SELECT COUNT(*) FROM module WHERE moduleID = :moduleID';
     $stmt = $db->prepare($sql);
     $stmt->bindParam(':moduleID', $_GET['moduleID']);
@@ -41,11 +41,10 @@ if(isset($_GET['moduleID'])) {
         $user->setModules($db);
         $modules = $user->modules;
         
-        //Create var for current module
+        //Create var for current module in current scope
         $currentModule;
-        
-//        $currentModule = $_GET['moduleID'];
-        
+                
+        //Set pages for users modules and instantiate $currentModule
         foreach($modules as $module) {
             $module->setModulePage($db);
             if ($_GET['moduleID'] == $module->moduleID) {
@@ -53,6 +52,7 @@ if(isset($_GET['moduleID'])) {
             }
         }
         
+        //If $currentModule was not instantiated then it's not one of the users modules, so it is set up here
         if(!isset($currentModule)) {
             $stmt = $db->prepare('SELECT *
             FROM module
@@ -63,6 +63,7 @@ if(isset($_GET['moduleID'])) {
             $currentModule->setModulePage($db);
         }
         
+        //Check that a module page is set, if not set it to the first stored page
         if(isset($_GET['modulePage'])) {
             if(in_array($_GET['modulePage'], $currentModule->modulePage)) {
                 $currentModule->setCurrentPage($db, $_GET['modulePage']);
@@ -92,6 +93,7 @@ if(isset($_GET['moduleID'])) {
         $stmt->bindParam(':kNumber', $_SESSION['username']);
         $stmt->execute();
         
+        //Set priv variable for later use
         if($stmt->fetchColumn() == 1){
             $priv = true;
         } else {
@@ -123,13 +125,13 @@ if(isset($_GET['moduleID'])) {
             }
             $stmt->execute();
 
-            //Can probably remove this var
+            //This can also be done with a PHP method, which i imagine does the exact same thing.
             $sql = 'SELECT LAST_INSERT_ID();';
             $stmt = $db->prepare($sql);
             $stmt->execute();
             $lastID = $stmt->fetchColumn();
 
-            print_r($lastID);
+            //print_r($lastID);
             
             if(isset($_POST['fileChoice'])) {
 
@@ -164,6 +166,7 @@ if(isset($_GET['moduleID'])) {
             }
         }
         
+        //Run this if a comment is posted.
         if(isset($_POST['postComment'])) {
             $sql = 'INSERT INTO postComment (postID, kNumber, commentText, dateTimeCommented)
                     VALUES (:postID, :kNumber, :commentText, now())';

@@ -1,6 +1,8 @@
 <?php
 namespace frontRow;
 
+//This code was written by Joshua Stringfellow by following the Lynda.com course Uploading Files with PHP.
+
 class UploadFile {
     
     protected $destination;

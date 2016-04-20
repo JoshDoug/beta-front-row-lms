@@ -1,3 +1,5 @@
+//This file uses code provided by the Lynda.com course Uploading Files with PHP
+
 var field = document.getElementById('filename');
 field.addEventListener('change', countFiles, false);
 
