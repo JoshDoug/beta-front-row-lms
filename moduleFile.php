@@ -4,6 +4,7 @@ use frontRow\Module;
 use frontRow\ModulePage;
 use frontRow\UploadFile;
 use frontRow\User;
+use frontRow\Post;
 
 require_once '_includes/pdoConnect.php';
 require_once '_includes/authenticate.php';
@@ -11,6 +12,7 @@ require_once '_includes/frontRow/Module.php';
 require_once '_includes/frontRow/ModulePage.php';
 require_once '_includes/frontRow/UploadFile.php';
 require_once '_includes/frontRow/User.php';
+require_once '_includes/frontRow/Post.php';
 
 $sql = 'SELECT permission FROM userModule WHERE kNumber = :kNumber AND moduleID = :moduleID';
 $stmt = $db->prepare($sql);
@@ -39,8 +41,18 @@ $user->setModules($db);
 $modules = $user->modules;
 
 foreach($modules as $module) {
-    
     $module->setModulePage($db);    
+}
+
+//If $currentModule was not instantiated then it's not one of the users modules, so it is set up here
+if(!isset($currentModule)) {
+    $stmt = $db->prepare('SELECT *
+    FROM module
+    WHERE moduleID = :moduleID');
+    $stmt->bindParam(':moduleID', $_GET['moduleID']);
+    $stmt->execute();
+    $currentModule = $stmt->fetchObject('Module');
+    $currentModule->setModulePage($db);
 }
 
 if(!isset($_SESSION['maxfiles'])){
