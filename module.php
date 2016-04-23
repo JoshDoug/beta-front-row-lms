@@ -27,7 +27,6 @@ if(isset($_GET['moduleID'])) {
     if ($stmt->fetchColumn() == 0) {
         header('Location: home.php');
     } else {
-        
         //Set up user
         $stmt = $db->prepare('SELECT *
         FROM user
@@ -103,6 +102,14 @@ if(isset($_GET['moduleID'])) {
         
         //Handle Posts - potentially shift into a require/include
         $moduleID = $_GET['moduleID'] . '/';
+        
+        //Create Upload folder if it's not already there.
+        $uploadFolder = __DIR__ . '/_uploads';
+        
+        if(!is_dir($uploadFolder)) {
+            mkdir($uploadFolder, 0755);
+        }
+        
         $destination = __DIR__ . '/_uploads/' . $moduleID;
 
         if(!is_dir($destination)) {

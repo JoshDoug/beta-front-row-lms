@@ -65,6 +65,15 @@ $max = 32000000;
 $result = [];
 
 $moduleID = $_GET['moduleID'];
+
+$uploadFolder = __DIR__ . '/_uploads';
+
+//Create uploadFolder if it's not already there
+if(!is_dir($uploadFolder)) {
+    mkdir($uploadFolder, 0755);
+}
+
+
 $destination = __DIR__ . '/_uploads/' . $moduleID . '/';
 
 if(!is_dir($destination)) {
